@@ -123,6 +123,9 @@ plt.plot(time_axis, q_log[:,0], label="PyBullet q1")
 plt.plot(time_axis, q_log[:,1], label="PyBullet q2")
 
 plt.plot(time_axis, q_log[:,2], label="PyBullet q3")
+plt.plot(time_axis, qd_log[:,0], '--', label="Target q1")
+plt.plot(time_axis, qd_log[:,1], '--', label="Target q2")
+plt.plot(time_axis, qd_log[:,2], '--', label="Target q3")
 
 plt.xlabel("Время, c")
 plt.ylabel("Углы (рад)")
@@ -138,9 +141,36 @@ plt.plot(time_axis, q_my_log[:,0], '--', label="MyModel q1")
 plt.plot(time_axis, q_my_log[:,1], '--', label="MyModel q2")
 
 plt.plot(time_axis, q_my_log[:,2], '--', label="MyModel q3")
+plt.plot(time_axis, qd_log[:,0], '--', label="Target q1")
+plt.plot(time_axis, qd_log[:,1], '--', label="Target q2")
+plt.plot(time_axis, qd_log[:,2], '--', label="Target q3")
 plt.xlabel("Время, c")
 plt.ylabel("Углы (рад)")
 plt.legend()
 plt.title("Собственная модель")
 plt.grid()
 plt.show()
+
+
+mask = time_axis >= 2.0
+error_pb = q_log[mask] - qd_log[mask]
+L2_pb = np.sqrt(np.mean(np.sum(error_pb**2, axis=1)))
+Linf_pb = np.max(np.abs(error_pb))
+print(f"Нормы PyBullet vs Target (t >= 2c):")
+print(f"L2-норма ошибки = {L2_pb:.4f} рад")
+print(f"L∞-норма ошибки = {Linf_pb:.4f} рад")   
+
+
+error_my = q_my_log[mask] - qd_log[mask]
+L2_my = np.sqrt(np.mean(np.sum(error_my**2, axis=1)))
+Linf_my = np.max(np.abs(error_my))
+print(f"нормы MyModel vs Target (t >= 2c):")
+print(f"L2-норма ошибки = {L2_my:.4f} рад")
+print(f"L∞-норма ошибки = {Linf_my:.4f} рад")
+
+error = q_log[mask] - q_my_log[mask]
+L2 = np.sqrt(np.mean(np.sum(error**2, axis=1)))
+Linf = np.max(np.abs(error))
+print(f"Нормы сравнения PyBullet vs своя модель (t >= 2c):")
+print(f"L2-норма ошибки = {L2:.4f} рад")
+print(f"L∞-норма ошибки = {Linf:.4f} рад")
