@@ -153,3 +153,20 @@ plt.show()
 # --- Отключение ---
 p.disconnect(client_direct)
 
+mask = time_axis >= 2.0
+
+# --- Метрики PyBullet vs цель (t >= 2) ---
+error_pb = eef_traj[mask] - xd_traj[mask]
+L2_pb = np.sqrt(np.mean(np.sum(error_pb**2, axis=1)))
+Linf_pb = np.max(np.abs(error_pb))
+print(f"Нормы PyBullet vs цель (t >= 2с):")
+print(f"L2-норма ошибки = {L2_pb:.4f} м")
+print(f"L∞-норма ошибки = {Linf_pb:.4f} м")
+
+# --- Метрики MyModel vs цель (t >= 2) ---
+error_my = eef_my_traj[mask] - xd_traj[mask]
+L2_my = np.sqrt(np.mean(np.sum(error_my**2, axis=1)))
+Linf_my = np.max(np.abs(error_my))
+print(f"Нормы  MyModel vs цель (t >= 2с):")
+print(f"L2-норма ошибки = {L2_my:.4f} м")
+print(f"L∞-норма ошибки = {Linf_my:.4f} м")
